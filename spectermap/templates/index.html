@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SpecterMap · Surface intelligence</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.4/dist/cytoscape.min.js"></script>
+<link rel="stylesheet" href="/static/style.css">
+<script defer src="/static/app.js"></script>
+</head>
+<body x-data="dashboard()" class="bg-slate-950 text-slate-200">
+<header class="border-b border-slate-800 px-8 py-6 flex justify-between items-center"><div><h1 class="text-2xl font-bold tracking-tight">◈ <span class="text-emerald-400">Specter</span>Map</h1><p class="text-xs text-slate-500 mt-1 tracking-widest">ATTACK SURFACE INTELLIGENCE</p></div><span class="text-xs" :class="connected ? 'text-emerald-400':'text-amber-400'" x-text="connected ? '● LIVE STREAM':'● RECONNECTING'"></span></header>
+<main class="p-6 max-w-screen-2xl mx-auto">
+<form @submit.prevent="start()" class="flex flex-wrap gap-3 mb-5"><input aria-label="Target" required x-model="target" placeholder="Domain, IP, or https://host:port" class="flex-1 min-w-64"><input aria-label="Page limit" title="Page limit" type="number" min="1" max="50" x-model.number="pages" class="w-24"><button :disabled="busy" class="primary" x-text="busy ? 'Starting…' : 'Start scan →'"></button></form>
+<p class="text-xs text-slate-500 mb-5">Bounded same-origin crawl · DNS resolution · HTTP metadata · Local CVE candidates</p>
+<p role="alert" x-show="error" x-text="error" class="text-rose-400 mb-4"></p>
+<div class="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-5">
+<aside class="panel p-4"><h2 class="text-xs tracking-widest text-slate-400 mb-4">SCAN HISTORY</h2><p x-show="!scans.length" class="text-sm text-slate-500">Start a scan to map your surface.</p><template x-for="scan in scans" :key="scan.id"><div class="mb-3"><button @click="select(scan.id)" class="w-full text-left" :class="selected === scan.id ? 'border-emerald-600':''"><span class="block truncate text-sm" x-text="scan.target"></span><span class="text-xs text-emerald-400" x-text="'#' + scan.id + ' · ' + scan.status"></span></button><button x-show="['queued','running'].includes(scan.status)" @click="cancel(scan.id)" class="text-xs mt-1">Cancel</button><p class="text-xs text-rose-400 break-words" x-text="scan.error"></p></div></template></aside>
+<section class="panel overflow-hidden"><div class="p-4 border-b border-slate-800 flex justify-between"><h2 class="text-sm">Relationship topology <span class="text-slate-500" x-text="' / ' + count + ' assets'"></span></h2><div class="flex gap-2"><button @click="window.specterGraph?.fit(undefined,30)" class="text-xs">Fit</button><button @click="download()" :disabled="!selected" class="text-xs">Export JSON</button></div></div><div id="graph" x-ignore></div><div class="p-4 text-xs text-slate-400 border-t border-slate-800"><p x-show="!detail">Select a node to inspect evidence. Risk is the highest connected candidate CVSS score.</p><pre class="whitespace-pre-wrap break-all" x-text="detail"></pre></div></section>
+</div>
+<section class="panel mt-5"><div class="p-4 border-b border-slate-800 text-xs tracking-widest text-slate-400">LIVE ACTIVITY <span class="text-slate-600"> / CURRENT SCAN</span></div><div class="h-48 overflow-auto p-4 font-mono text-xs" id="logs"><template x-for="(log,i) in visibleLogs" :key="i"><p class="mb-2" :class="log.level === 'error' ? 'text-rose-400':'text-slate-400'"><span class="text-slate-600" x-text="log.time?.slice(11,19)"></span> <span x-text="log.message"></span></p></template></div></section>
+</main></body></html>

@@ -1,0 +1,4 @@
+[
+  {"product":"apache","min":"2.4.49","fixed":"2.4.50","cve":"CVE-2021-41773","severity":7.5,"summary":"Path traversal candidate; configuration and vendor patches must be verified.","reference":"https://httpd.apache.org/security/vulnerabilities_24.html"},
+  {"product":"apache","min":"2.4.50","fixed":"2.4.51","cve":"CVE-2021-42013","severity":9.8,"summary":"Path traversal candidate; configuration and vendor patches must be verified.","reference":"https://httpd.apache.org/security/vulnerabilities_24.html"}
+]

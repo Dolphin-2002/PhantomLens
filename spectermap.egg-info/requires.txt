@@ -1,0 +1,14 @@
+fastapi<1,>=0.115
+uvicorn[standard]<1,>=0.30
+sqlalchemy[asyncio]<3,>=2.0
+aiosqlite<1,>=0.20
+httpx<1,>=0.27
+beautifulsoup4<5,>=4.12
+networkx<4,>=3.3
+jinja2<4,>=3.1.6
+packaging>=24
+
+[dev]
+pytest>=8
+pytest-asyncio>=0.24
+ruff>=0.9
